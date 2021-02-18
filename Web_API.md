@@ -13,7 +13,14 @@ Framework: .NET 5.0
 
 ## Authentication & Authorization
 
-  ### ConfigureServices():
+### appsettings.json
+
+    "Authorization": {
+        "azureAuthority": "https://#{LoginService}#.b2clogin.com/#{LoginService}#.onmicrosoft.com/#{LoginUserFlow}#/v2.0",
+        "azureAudience": "#{WebAPIAppID}#"
+    }
+
+### ConfigureServices():
 
     services.AddAuthentication(options =>
     {
@@ -48,7 +55,7 @@ Framework: .NET 5.0
        };
     });
     
-  ### Configure():
+### Configure():
     
     app.UseAuthentication();
 
@@ -56,17 +63,19 @@ Framework: .NET 5.0
 
 ## Security
 
-  ### Configure():
+### Configure():
   
     app.useHsts();
 
 ## CORS
 
-  ### ConfigureService():
+Only enable CORS in development or if needed.
+
+### ConfigureService():
   
     app.AddCors();
     
-  ### Configure():
+### Configure():
   
     app.UseCors(builder => builder
        .AllowAnyOrigin()
@@ -75,4 +84,15 @@ Framework: .NET 5.0
 
 ## Logging
 
-  ### Serilog
+### Serilog
+
+    var config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
+
+    Log.Logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(config)
+        .CreateLogger();
+
+## Exception Handling
+
