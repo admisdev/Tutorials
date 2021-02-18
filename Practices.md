@@ -42,7 +42,7 @@ v.	Any code affect distribution of customer data to large number of users
 e.	A summary need to be sent to the whole Development Team
 
 ## Follow Release Management Process
-Will be defined in the doc at: http://admiscentral/departments/IT/Development/Development%20Process%20and%20Tools/SoftwareDevelopmentProcedures.docx
+Will be defined in the doc at: SoftwareDevelopmentProcedures.docx
 
 
 ## References:
