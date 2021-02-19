@@ -1,4 +1,4 @@
-# Web API Tutorial
+# Web API Best Practices
 
 Framework: .NET 5.0
 
@@ -11,7 +11,7 @@ Framework: .NET 5.0
   -Services
   
 
-## Authentication & Authorization
+## B2C Authentication & Authorization
 
 ### appsettings.json
 
@@ -61,6 +61,28 @@ Framework: .NET 5.0
 
     app.UseAuthorization();
 
+## SQL Query
+
+Should we recommend not to use entity framework?
+
+    List<Result> results = new List<Result>();
+    using (SqlConnection connection = new SqlConnection(this.configuration.GetSection("DBConnectionString").Value))
+    {
+        connection.Open();
+        var queryString = "exec up_GetResults @Param1=@Param1, @Param2=@Param2";
+        SqlCommand command = new SqlCommand(queryString, connection);
+        command.Parameters.Add(new SqlParameter("@Param1", param1));
+        command.Parameters.Add(new SqlParameter("@Param2", param2));
+        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+        {
+            while (reader.Read())
+            {
+                results.Add(new Result(reader));
+            }
+        }
+        return results;
+    }
+
 ## Security
 
 ### Configure():
@@ -94,5 +116,16 @@ Only enable CORS in development or if needed.
         .ReadFrom.Configuration(config)
         .CreateLogger();
 
-## Exception Handling
+### Azure Event Hub
 
+    var eventHubConfig = Configuration.GetSection("Logging").GetSection("eventHub");
+    string eventHubConnection = eventHubConfig.GetValue<string>("connectionString");
+    Log.Logger = new LoggerConfiguration()
+        .WriteTo.AzureEventHub(new JsonFormatter(),
+            eventHubConnection.Replace(@"\", ""),
+            eventHubConfig.GetValue<string>("entityName"))
+        .CreateLogger();
+
+## Error Handling
+
+Return StatusCode(400, "Error message") or BadRequest(), Status(401, "Error message") or UnAuthorized()?
